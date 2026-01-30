@@ -99,11 +99,6 @@ export class S3Driver implements Driver<AwsFile> {
 			});
 			
 			const object = await this.s3.send(command);
-			// bucket: this,
-			// 	path,
-			// 	updated,
-			// 	size: object.ContentLength,
-			// 		contentType: object.ContentType	
 			const { ContentLength, ContentType, LastModified, ETag } = object;
 			const Key = path;
 			const Size = ContentLength;
@@ -112,7 +107,7 @@ export class S3Driver implements Driver<AwsFile> {
 			return awsFile;
 		} catch (ex: any) {
 			//  if NotFound, return false
-			if (ex.code === 'NotFound') {
+			if (ex.code === 'NotFound' || ex.name === 'NotFound') {
 				return null;
 			}
 			// otherwise, propagate the exception
